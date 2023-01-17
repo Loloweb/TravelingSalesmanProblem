@@ -199,7 +199,6 @@ def Genetiq(n:int, m:int, t:int, c:str, iters:int):
             fils = Croisement(P[i], P[-(i+1)], 2, 3)    # on ajoute les fils générés à la population
             P.append(fils[0])
             P.append(fils[1])
-        print(m%2==0 and len(P)%2!=0)
         if( (m%2==0 and len(P)%2!=0) or (m%2!=0 and len(P)%2==0)):    # cas d'une population à effectif impair
             index_milieu = int(len(P)/2-0.5)
             index_random = rd.randrange(0,len(P))
