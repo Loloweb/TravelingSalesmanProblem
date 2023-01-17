@@ -70,13 +70,13 @@ def SelectElit(P:list, distances:list):
     Il s'agit d'une sélection élitiste
     """
     classement = {}
-    for i in P:
-        classement[CalculAdapt(i,distances)] = i  # on ajoute chaque individu avec son trajet dans un dictionnaire
-    # on trie le dictionnnaire, les meilleurs individus se retrouvent à la 1ère moitié qu'on garde
-    dictTrie = (sorted(classement.items())[0:int(len(classement)/2)])
+    for i in range(len(P)):
+        classement[i] = CalculAdapt(P[i],distances)  # on ajoute l'index de chaque individu avec le trajet dans un dictionnaire
+    # on trie le dictionnnaire sur la valeur (le trajet), les meilleurs individus se retrouvent à la 1ère moitié qu'on garde
+    dictTrie = sorted(classement.items(), key=lambda x:x[1])[0:int(len(classement)/2)]
     res =[]
     for value in dictTrie:
-        res.append(value[1])    # on ajoute les individus qui sont la valeur dans le dictionnaire
+        res.append(P[value[0]])    # on ajoute les individus via leur indice dans P
     return res
 
 def SelectTourn(P:list, distances:list):
@@ -112,8 +112,6 @@ def CroisementBis(p1, p2, i, j):
 
     for fin in p1[i+j:]: #Ajout des dernieres valeurs
         fils.append(fin)
-
-    print(fils)
 
     #liste qui va stocker les valeurs sans les doublons, ils seront remplacer par 'X' en cas de doublons
     tempin = list()
@@ -157,12 +155,26 @@ def Mutation(individu):
     deux indices permuté aléatoirement
     """
     # on genere deux nombres aléatoire entre 1 et n
-    i = random.randint(1, len(individu)-1)
-    j = random.randint(1, len(individu)-1)
+    i = rd.randrange(1, len(individu))
+    j = rd.randrange(1, len(individu))
     #on inverse les valeurs pour les deux indices
     individu[i], individu[j] = individu[j], individu[i]
 
     return individu
+
+def SelectBest(P:list, distances:list):
+    """
+    fonction qui prend en paramètre une population P de 2m individus
+    et la matrice des distances entre les villes
+    et qui renvoie la meilleure de ces solutions
+    Il s'agit d'une sélection élitiste
+    """
+    classement = {}
+    for i in range(len(P)):
+        classement[i] = CalculAdapt(P[i],distances)  # on ajoute l'index de chaque individu avec le trajet dans un dictionnaire
+    # on trie le dictionnnaire sur la valeur (le trajet), les meilleurs individus se retrouvent à la 1ère moitié qu'on garde
+    dictTrie = sorted(classement.items(), key=lambda x:x[1])[0:int(len(classement)/2)]
+    return P[dictTrie[0][0]]
 
 def Genetiq(n:int, m:int, t:int, c:str, iters:int):
     """
@@ -180,18 +192,24 @@ def Genetiq(n:int, m:int, t:int, c:str, iters:int):
         # Sélection
         if(c=="élitiste"):
             P = SelectElit(P,carte)
-        else:
+        elif(c=="par tournoi"):
             P = SelectTourn(P,carte)
         # Croisement
         for i in range(len(P)//2):
-            fils = Croisement(P[i], P[-(i+1)], 1, 3)    # on ajoute les fils générés à la population
+            fils = Croisement(P[i], P[-(i+1)], 2, 3)    # on ajoute les fils générés à la population
             P.append(fils[0])
             P.append(fils[1])
+        print(m%2==0 and len(P)%2!=0)
+        if( (m%2==0 and len(P)%2!=0) or (m%2!=0 and len(P)%2==0)):    # cas d'une population à effectif impair
+            index_milieu = int(len(P)/2-0.5)
+            index_random = rd.randrange(0,len(P))
+            fils = Croisement(P[index_milieu],P[index_random],2,3)
+            P.append(fils[1]) # on ajout un fils sur les 2 pour avoir le même nombre d'individus
         # Mutation
         for i in range(pourcentage):
-            index = randrange(0,len(P))     # mutation aléatoire de t% des individus
+            index = rd.randrange(0,len(P))     # mutation aléatoire de t% des individus
             P[index] = Mutation(P[index])
-    return P
+    return SelectBest(P,carte)
 
 if __name__ == '__main__':
-    print(Genetiq(5,5,50,"élitiste",10))
+    print(Genetiq(5,10,50,"élitiste",10))
