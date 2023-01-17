@@ -175,6 +175,11 @@ def Genetiq(n:int, m:int, t:int, c:str, iters:int):
 distances = Carto(5)
 
 if __name__ == '__main__':
-    indiv = Populat(5,1)[0]
-    print(indiv)
-    print(CalculAdapt(indiv))
+    print(distances)
+    pop = Populat(5,6)
+    print(pop)
+    print(CalculAdapt(pop[0]))
+    print(SelectElit(pop))
+    print(SelectTourn(pop))
+    print(Croisement(pop[0], pop[1], 2, 3))
+    print(Mutation(pop[0]))
