@@ -95,17 +95,6 @@ def SelectTourn(P:list):
             res.append(elem2)
     return res
 
-def Croisement(p1:list, p2:list, i:int, j:int):
-    f1 = list()
-    f1.append(p1[0])
-    for i in p2[i:i+j]:
-        f1.append(i)
-
-    for j in p1[i+j+1:]:
-        f1.append(j)
-
-    return f1
-
 def CroisementBis(p1, p2, i, j):
     """
     Cette fonction prend en parametre deux individus et deux indices, la valeur de debut i de croisement
@@ -167,8 +156,8 @@ def Mutation(individu):
     deux indices permuté aléatoirement
     """
     # on genere deux nombres aléatoire entre 1 et n
-    i = random.randint(1, len(individu)-1)
-    j = random.randint(1, len(individu)-1)
+    i = rd.randint(1, len(individu)-1)
+    j = rd.randint(1, len(individu)-1)
     #on inverse les valeurs pour les deux indices
     individu[i], individu[j] = individu[j], individu[i]
 
