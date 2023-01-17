@@ -48,11 +48,11 @@ def Populat(n:int, m:int):
         P.append(solution)
     return P
 
-def CalculAdapt(chemin:list):
+def CalculAdapt(chemin:list, distances:list):
     """
     fonction qui prend comme paramètre d'entrée une solution (un individu)
-    et qui renvoie la distance totale parcourue si l'on suit ce trajet.
-    On utilise la matrice des distances définie avant
+    et la matrice des distances entre les villes et qui renvoie la distance
+    totale parcourue si l'on suit ce trajet.
     """
     somme = 0
     for etape in range(len(chemin)-1):
@@ -62,15 +62,16 @@ def CalculAdapt(chemin:list):
     somme += distances[chemin[len(chemin)-1]-1, 0]
     return somme
 
-def SelectElit(P:list):
+def SelectElit(P:list, distances:list):
     """
     fonction qui prend en paramètre une population P de 2m individus
+    et la matrice des distances entre les villes
     et qui renvoie les m meilleures solutions.
     Il s'agit d'une sélection élitiste
     """
     classement = {}
     for i in P:
-        classement[CalculAdapt(i)] = i  # on ajoute chaque individu avec son trajet dans un dictionnaire
+        classement[CalculAdapt(i,distances)] = i  # on ajoute chaque individu avec son trajet dans un dictionnaire
     # on trie le dictionnnaire, les meilleurs individus se retrouvent à la 1ère moitié qu'on garde
     dictTrie = (sorted(classement.items())[0:int(len(classement)/2)])
     res =[]
@@ -78,10 +79,10 @@ def SelectElit(P:list):
         res.append(value[1])    # on ajoute les individus qui sont la valeur dans le dictionnaire
     return res
 
-def SelectTourn(P:list):
+def SelectTourn(P:list, distances:list):
     """
     fonction qui prend en paramètre une population P de 2m individus
-    et qui renvoie m solutions.
+    et la matrice des distances entre les villes et qui renvoie m solutions.
     Il s'agit d'une sélection par tournoi
     """
     liste = P   # liste modifiable identique à la population
@@ -89,7 +90,7 @@ def SelectTourn(P:list):
     for i in range(len(P)//2):
         elem1 = liste.pop(rd.randrange(0,len(liste)))
         elem2 = liste.pop(rd.randrange(0,len(liste)))
-        if(CalculAdapt(elem1) < CalculAdapt(elem2)):
+        if(CalculAdapt(elem1, distances) < CalculAdapt(elem2, distances)):
             res.append(elem1)
         else:
             res.append(elem2)
@@ -156,8 +157,8 @@ def Mutation(individu):
     deux indices permuté aléatoirement
     """
     # on genere deux nombres aléatoire entre 1 et n
-    i = rd.randint(1, len(individu)-1)
-    j = rd.randint(1, len(individu)-1)
+    i = random.randint(1, len(individu)-1)
+    j = random.randint(1, len(individu)-1)
     #on inverse les valeurs pour les deux indices
     individu[i], individu[j] = individu[j], individu[i]
 
@@ -165,21 +166,32 @@ def Mutation(individu):
 
 def Genetiq(n:int, m:int, t:int, c:str, iters:int):
     """
-    fonction prend en entrée un entier n (nombre de villes), le nombre d'individus, 2m,
+    fonction prend en entrée un entier n (nombre de villes), le nombre d'individus, m,
     dans la population initiale, le taux, t, de la population subissant une mutation à chaque itération,
     la méthode de sélection c choisie (élitiste ou par tournoi) et le nombre iters d'itérations.
     Cette fonction donne en sortie la solution retenue.
     """
-    pass
+    # on initialise la population de départ et la matrice puis on calcule le nombre d'individus à muter
+    P = Populat(n,m)
+    carte = Carto(n)
+    pourcentage = int(t*m/100)
 
-distances = Carto(5)
+    for iteration in range(iters):
+        # Sélection
+        if(c=="élitiste"):
+            P = SelectElit(P,carte)
+        else:
+            P = SelectTourn(P,carte)
+        # Croisement
+        for i in range(len(P)//2):
+            fils = Croisement(P[i], P[-(i+1)], 1, 3)    # on ajoute les fils générés à la population
+            P.append(fils[0])
+            P.append(fils[1])
+        # Mutation
+        for i in range(pourcentage):
+            index = randrange(0,len(P))     # mutation aléatoire de t% des individus
+            P[index] = Mutation(P[index])
+    return P
 
 if __name__ == '__main__':
-    print(distances)
-    pop = Populat(5,6)
-    print(pop)
-    print(CalculAdapt(pop[0]))
-    print(SelectElit(pop))
-    print(SelectTourn(pop))
-    print(Croisement(pop[0], pop[1], 2, 3))
-    print(Mutation(pop[0]))
+    print(Genetiq(5,5,50,"élitiste",10))
