@@ -68,44 +68,33 @@ def SelectTourn(P):
             res.append(elem2)
     return res
 
-def Croisement(p1:list, p2:list, i:int, j:int):
-    f1 = list()
-    f1.append(p1[0])
-    for i in p2[i:i+j]:
-        f1.append(i)
-
-    for j in p1[i+j+1:]:
-        f1.append(j)
-
-    return f1
-
-def Croisement(p1:list, p2:list, i:int, j:int):
-    fils1 = CroisementBis(p1,p2,i,j)
-    fils2 = CroisementBis(p2,p1,i,j)
-    return fils1, fils2
-
-def CroisementBis(p1:list, p2:list, i:int, j:int):
+def CroisementBis(p1, p2, i, j):
+    
     fils = list()
     fils.append(p1[0])
     i-= 1
     for k in p2[i:i+j] :
         fils.append(k)
-
+        
     for j in p1[i+j:]:
         fils.append(j)
-
+    
     tempin = list()
-    tempout = list()
-    for elem in range(fils) :
-        if fils[elem] not in temp :
-            tempin.append(fils[elem])
-        else :
-            tempout.append(fils[elem])
+    for elem in fils :
+        if elem not in tempin :
+            tempin.append(elem)
+    
+    for elem2 in p1:
+        if elem2 not in tempin:
+            tempin.append(elem2) 
+    
+    return tempin
 
-    if len(tempout):
-        pass
+def Croisement(p1, p2, i, j):
+    fils1 = CroisementBis(p1,p2,i,j)
+    fils2 = CroisementBis(p2,p1,i,j)
 
-    return fils
+    return fils1, fils2
 
 distances = Carto(5)
 
