@@ -129,4 +129,5 @@ dmypy.json
 .pyre/
 
 # Other
-.vscode/settings.json
+.vscode/
+.~lock.*
