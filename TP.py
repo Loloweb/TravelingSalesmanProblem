@@ -31,21 +31,22 @@ def Populat(n:int, m:int):
     P = []
     villes = [i+1 for i in range(n)] # liste croissante des numéros de villes
 
-    for i in range(m):
+    for i in range(m): # on boucle m fois
         solution = []
         solution.append(villes[0]) # on ajoute la ville numéro 1
-        nb = rd.randint(1, n-1)
+        nb = rd.randint(1, n-1) # on génère un nombre aléatoire entre 1 et n-2
 
-        for j in range(n-1):
-            if villes[nb] not in solution :
+        for j in range(n-1): # on place les valeurs aléatoirement dans la liste solution
+            if villes[nb] not in solution : # si il n'y est pas déjà on l'ajoute
                 solution.append(villes[nb])
             else :
-                while (villes[nb] in solution):
-                    nb = rd.randint(1, n-1)
-                solution.append(villes[nb])
-        if solution in P:
+                while (villes[nb] in solution): # tant qu'on ne peut pas l'ajouter car déjà présent dans solution
+                    nb = rd.randint(1, n-1) # on génère un nouveau nombre random
+                solution.append(villes[nb]) # quand c'est bon on l'ajoute
+        if solution in P: # si on a déjà trouvé cette solution avant on recommence un fois de plus
             i -= 1
-        P.append(solution)
+        else: # sinon on l'ajoute
+            P.append(solution)
     return P
 
 def CalculAdapt(chemin:list, distances:list):
@@ -177,7 +178,7 @@ def SelectBest(P:list, distances:list):
         classement[i] = CalculAdapt(P[i],distances)  # on ajoute l'index de chaque individu avec le trajet dans un dictionnaire
     # on trie le dictionnnaire sur la valeur (le trajet), les meilleurs individus se retrouvent à la 1ère moitié qu'on garde
     dictTrie = sorted(classement.items(), key=lambda x:x[1])[0:int(len(classement)/2)]
-    return P[dictTrie[0][0]]
+    return P[dictTrie[0][0]] # on prend l'individu via son idex dans le dictionnaire
 
 def Genetiq(n:int, m:int, t:int, c:str, iters:int):
     """
@@ -206,7 +207,7 @@ def Genetiq(n:int, m:int, t:int, c:str, iters:int):
             index_milieu = int(len(P)/2-0.5)
             index_random = rd.randrange(0,len(P))
             fils = Croisement(P[index_milieu],P[index_random],2,3)
-            P.append(fils[1]) # on ajout un fils sur les 2 pour avoir le même nombre d'individus
+            P.append(fils[1]) # on ajoute un fils sur les 2 pour avoir le même nombre d'individus
         # Mutation
         for i in range(pourcentage):
             index = rd.randrange(0,len(P))     # mutation aléatoire de t% des individus
