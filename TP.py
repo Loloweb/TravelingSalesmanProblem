@@ -85,18 +85,18 @@ def SelectTourn(P:list, distances:list):
     et la matrice des distances entre les villes et qui renvoie m solutions.
     Il s'agit d'une sélection par tournoi
     """
-    liste = []   # liste modifiable identique à la population
+    liste = []   # liste temporaire identique à la population
     for i in P:
         liste.append(i)
     res = []
     for i in range(len(P)//2):
+        # on prend 2 éléments au hasard
         elem1 = liste.pop(rd.randrange(0,len(liste)))
         elem2 = liste.pop(rd.randrange(0,len(liste)))
         if(CalculAdapt(elem1, distances) < CalculAdapt(elem2, distances)):
             res.append(elem1)
         else:
             res.append(elem2)
-    
     return res
 
 def CroisementBis(p1, p2, i, j):
