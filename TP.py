@@ -182,9 +182,9 @@ def SelectBest(P:list, distances:list):
 def Genetiq(n:int, m:int, t:int, c:str, iters:int):
     """
     fonction prend en entrée un entier n (nombre de villes), le nombre d'individus, m,
-    dans la population initiale, le taux, t, de la population subissant une mutation à chaque itération,
+    dans la population initiale, le taux t de la population subissant une mutation à chaque itération,
     la méthode de sélection c choisie (élitiste ou par tournoi) et le nombre iters d'itérations.
-    Cette fonction donne en sortie la solution retenue.
+    Cette fonction donne en sortie la meilleure des solutions.
     """
     # on initialise la population de départ et la matrice puis on calcule le nombre d'individus à muter
     P = Populat(n,m)
@@ -215,12 +215,14 @@ def Genetiq(n:int, m:int, t:int, c:str, iters:int):
 
 if __name__ == '__main__':
     distance = Carto(5)
+    print("Carto : ")
     afficherMatrice(distance)
     pop = Populat(5,6)
-    print("quoi feur ;",pop)
+    print("Populat : ",pop)
     print("CalculAdapt : ", CalculAdapt(pop[0],distance))
     print("SelectElit : ", SelectElit(pop,distance))
     print("SelectTourn : ", SelectTourn(pop,distance))
     print("Croisement et CroisementBis : ", Croisement(pop[0],pop[1],2,3))
     print("Mutation : ", Mutation(pop[0]))
-    print("Genetiq et SelectBest : ",Genetiq(5,6,50,"élitiste",10))
+    print("Genetiq et SelectBest élitiste : ",Genetiq(5,6,50,"élitiste",10))
+    print("Genetiq et SelectBest par tournoi : ",Genetiq(5,6,50,"par tournoi",10))
