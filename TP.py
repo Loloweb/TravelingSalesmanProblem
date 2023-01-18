@@ -85,7 +85,9 @@ def SelectTourn(P:list, distances:list):
     et la matrice des distances entre les villes et qui renvoie m solutions.
     Il s'agit d'une sélection par tournoi
     """
-    liste = P   # liste modifiable identique à la population
+    liste = []   # liste modifiable identique à la population
+    for i in P:
+        liste.append(i)
     res = []
     for i in range(len(P)//2):
         elem1 = liste.pop(rd.randrange(0,len(liste)))
@@ -94,6 +96,7 @@ def SelectTourn(P:list, distances:list):
             res.append(elem1)
         else:
             res.append(elem2)
+    
     return res
 
 def CroisementBis(p1, p2, i, j):
@@ -211,4 +214,13 @@ def Genetiq(n:int, m:int, t:int, c:str, iters:int):
     return SelectBest(P,carte)
 
 if __name__ == '__main__':
-    print(Genetiq(5,10,50,"élitiste",10))
+    distance = Carto(5)
+    afficherMatrice(distance)
+    pop = Populat(5,6)
+    print("quoi feur ;",pop)
+    print("CalculAdapt : ", CalculAdapt(pop[0],distance))
+    print("SelectElit : ", SelectElit(pop,distance))
+    print("SelectTourn : ", SelectTourn(pop,distance))
+    print("Croisement et CroisementBis : ", Croisement(pop[0],pop[1],2,3))
+    print("Mutation : ", Mutation(pop[0]))
+    print("Genetiq et SelectBest : ",Genetiq(5,6,50,"élitiste",10))
